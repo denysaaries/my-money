@@ -25,3 +25,15 @@ Catatan:
 - Data disimpan lokal di browser/HP.
 - Update file di GitHub tidak menghapus history selama localStorage key "myMoneyData" tetap sama.
 - Versi ini otomatis membaca history pengeluaran lama dan mempertahankan nilai tabungan lama.
+
+
+UPDATE v2 - SPACING IPHONE
+- Header Home, Tabungan, History, dan Atur dibuat turun agar tidak mepet status bar/notch.
+- Navbar bawah dibuat lebih ringkas.
+- Semua halaman diberi ruang bawah agar konten tidak tertutup navbar.
+- Service worker cache dinaikkan ke v5 agar update lebih mudah terbaca.
+
+Jika tampilan lama masih muncul:
+1. Buka web di Safari.
+2. Refresh halaman.
+3. Jika sudah dipasang ke Home Screen, tutup aplikasi My Money lalu buka lagi.
