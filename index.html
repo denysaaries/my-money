@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Money</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f6f8;
+      color: #1f2937;
+      padding-bottom: 90px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .header {
+      margin-bottom: 22px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .header p {
+      margin-top: 5px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .saldo-card {
+      background: linear-gradient(135deg, #111827, #374151);
+      color: white;
+      border-radius: 22px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    .saldo-card .label {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .saldo-card h2 {
+      margin-top: 8px;
+      font-size: 34px;
+    }
+
+    .small-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+
+    .card .label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .card .value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .section-title h3 {
+      font-size: 17px;
+    }
+
+    .section-title span {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #111827;
+      width: 0%;
+      transition: 0.3s;
+    }
+
+    .budget-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-main {
+      width: 100%;
+      background: #111827;
+      color: white;
+      padding: 15px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .transaction {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid #f1f1f1;
+    }
+
+    .transaction:last-child {
+      border-bottom: none;
+    }
+
+    .transaction-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .transaction-meta {
+      color: #9ca3af;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .transaction-amount {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .category-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 0;
+      font-size: 14px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 100;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 520px;
+      background: white;
+      padding: 22px;
+      border-radius: 25px 25px 0 0;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #111827;
+    }
+
+    .modal-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn-cancel {
+      background: #f3f4f6;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .btn-save {
+      background: #111827;
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .history-filter {
+      margin-bottom: 12px;
+    }
+
+    .history-filter select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: white;
+    }
+
+    .delete-btn {
+      background: #fee2e2;
+      color: #991b1b;
+      font-size: 11px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      margin-left: 8px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 5px 16px;
+      z-index: 50;
+    }
+
+    .bottom-nav button {
+      background: none;
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .bottom-nav button.active {
+      color: #111827;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .top-space {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 420px) {
+      .saldo-card h2 {
+        font-size: 28px;
+      }
+
+      .card .value {
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- HOME -->
+  <div id="homePage" class="page active">
+
+    <div class="header">
+      <h1>My Money 💰</h1>
+      <p id="monthLabel"></p>
+    </div>
+
+    <div class="saldo-card">
+      <div class="label">Saldo Saat Ini</div>
+      <h2 id="saldoDisplay">Rp0</h2>
+    </div>
+
+    <div class="small-grid">
+
+      <div class="card">
+        <div class="label">Tabungan</div>
+        <div class="value" id="tabunganDisplay">Rp0</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Pengeluaran</div>
+        <div class="value" id="pengeluaranDisplay">Rp0</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Budget</div>
+        <div class="value" id="budgetDisplay">Rp0</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Sisa Budget</div>
+        <div class="value" id="sisaDisplay">Rp0</div>
+      </div>
+
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <h3>Budget Bulan Ini</h3>
+        <span id="budgetPercent">0%</span>
+      </div>
+
+      <div class="progress">
+        <div id="budgetProgress" class="progress-bar"></div>
+      </div>
+
+      <div class="budget-info">
+        <span id="budgetUsedText">Terpakai Rp0</span>
+        <span id="budgetRemainText">Sisa Rp0</span>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="openExpenseModal()">
+      + Tambah Pengeluaran
+    </button>
+
+    <div class="section">
+      <div class="section-title">
+        <h3>Pengeluaran Hari Ini</h3>
+      </div>
+
+      <div id="todayTransactions"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <h3>Ringkasan Kategori</h3>
+      </div>
+
+      <div id="categorySummary"></div>
+    </div>
+
+  </div>
+
+
+  <!-- HISTORY -->
+  <div id="historyPage" class="page">
+
+    <div class="header">
+      <h1>History</h1>
+      <p>Riwayat semua pengeluaran</p>
+    </div>
+
+    <div class="section">
+
+      <div class="history-filter">
+        <select id="filterCategory" onchange="renderHistory()">
+          <option value="Semua">Semua Kategori</option>
+          <option value="Makan">Makan</option>
+          <option value="Transport">Transport</option>
+          <option value="Belanja">Belanja</option>
+          <option value="Tagihan">Tagihan</option>
+          <option value="Hiburan">Hiburan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+
+      <div id="historyList"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- SETTINGS -->
+  <div id="settingsPage" class="page">
+
+    <div class="header">
+      <h1>Atur Keuangan</h1>
+      <p>Atur saldo, tabungan, dan budget</p>
+    </div>
+
+    <div class="section">
+
+      <div class="settings-grid">
+
+        <div class="form-group">
+          <label>Saldo Awal</label>
+          <input type="number" id="saldoInput" placeholder="Contoh: 5000000">
+        </div>
+
+        <div class="form-group">
+          <label>Tabungan</label>
+          <input type="number" id="tabunganInput" placeholder="Contoh: 2000000">
+        </div>
+
+        <div class="form-group">
+          <label>Budget Bulanan</label>
+          <input type="number" id="budgetInput" placeholder="Contoh: 3000000">
+        </div>
+
+        <button class="btn-main" onclick="saveSettings()">
+          Simpan Pengaturan
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL -->
+<div id="expenseModal" class="modal">
+
+  <div class="modal-content">
+
+    <h2>Tambah Pengeluaran</h2>
+
+    <div class="form-group">
+      <label>Nama Pengeluaran</label>
+      <input type="text" id="expenseName" placeholder="Contoh: Makan Siang">
+    </div>
+
+    <div class="form-group">
+      <label>Nominal</label>
+      <input type="number" id="expenseAmount" placeholder="Contoh: 25000">
+    </div>
+
+    <div class="form-group">
+      <label>Kategori</label>
+
+      <select id="expenseCategory">
+        <option value="Makan">🍜 Makan</option>
+        <option value="Transport">🚗 Transport</option>
+        <option value="Belanja">🛒 Belanja</option>
+        <option value="Tagihan">💡 Tagihan</option>
+        <option value="Hiburan">🎮 Hiburan</option>
+        <option value="Lainnya">📦 Lainnya</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Tanggal</label>
+      <input type="date" id="expenseDate">
+    </div>
+
+    <div class="form-group">
+      <label>Catatan</label>
+      <input type="text" id="expenseNote" placeholder="Opsional">
+    </div>
+
+    <div class="modal-buttons">
+
+      <button class="btn-cancel" onclick="closeExpenseModal()">
+        Batal
+      </button>
+
+      <button class="btn-save" onclick="addExpense()">
+        Simpan
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- NAVIGATION -->
+<div class="bottom-nav">
+
+  <button id="navHome" class="active" onclick="showPage('home')">
+    🏠<br>Home
+  </button>
+
+  <button onclick="openExpenseModal()">
+    ➕<br>Tambah
+  </button>
+
+  <button id="navHistory" onclick="showPage('history')">
+    🧾<br>History
+  </button>
+
+  <button id="navSettings" onclick="showPage('settings')">
+    ⚙️<br>Atur
+  </button>
+
+</div>
+
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("myMoneyData")) || {
+  saldoAwal: 0,
+  tabungan: 0,
+  budget: 0,
+  expenses: []
+};
+
+
+function formatRupiah(number) {
+
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0
+  }).format(number);
+
+}
+
+
+function saveData() {
+
+  localStorage.setItem(
+    "myMoneyData",
+    JSON.stringify(data)
+  );
+
+}
+
+
+function getCurrentMonthExpenses() {
+
+  const now = new Date();
+
+  return data.expenses.filter(item => {
+
+    const date = new Date(item.date + "T00:00:00");
+
+    return (
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear()
+    );
+
+  });
+
+}
+
+
+function renderDashboard() {
+
+  const currentExpenses = getCurrentMonthExpenses();
+
+  const totalExpense = currentExpenses.reduce(
+    (total, item) => total + Number(item.amount),
+    0
+  );
+
+  const saldo =
+    Number(data.saldoAwal) -
+    totalExpense;
+
+  const sisaBudget =
+    Number(data.budget) -
+    totalExpense;
+
+  document.getElementById("saldoDisplay").innerText =
+    formatRupiah(saldo);
+
+  document.getElementById("tabunganDisplay").innerText =
+    formatRupiah(data.tabungan);
+
+  document.getElementById("pengeluaranDisplay").innerText =
+    formatRupiah(totalExpense);
+
+  document.getElementById("budgetDisplay").innerText =
+    formatRupiah(data.budget);
+
+  document.getElementById("sisaDisplay").innerText =
+    formatRupiah(sisaBudget);
+
+
+  let percent = 0;
+
+  if (data.budget > 0) {
+
+    percent =
+      (totalExpense / data.budget) * 100;
+
+  }
+
+  document.getElementById("budgetPercent").innerText =
+    Math.round(percent) + "%";
+
+  document.getElementById("budgetProgress").style.width =
+    Math.min(percent,100) + "%";
+
+  document.getElementById("budgetUsedText").innerText =
+    "Terpakai " + formatRupiah(totalExpense);
+
+  document.getElementById("budgetRemainText").innerText =
+    "Sisa " + formatRupiah(sisaBudget);
+
+
+  renderTodayTransactions();
+  renderCategorySummary();
+
+}
+
+
+function renderTodayTransactions() {
+
+  const container =
+    document.getElementById("todayTransactions");
+
+  const today =
+    new Date().toISOString().split("T")[0];
+
+  const todayData =
+    data.expenses
+    .filter(item => item.date === today)
+    .reverse();
+
+  if (todayData.length === 0) {
+
+    container.innerHTML =
+      '<div class="empty">Belum ada pengeluaran hari ini.</div>';
+
+    return;
+
+  }
+
+  container.innerHTML = todayData.map(item => `
+    <div class="transaction">
+
+      <div>
+        <div class="transaction-name">
+          ${item.name}
+        </div>
+
+        <div class="transaction-meta">
+          ${item.category}
+        </div>
+      </div>
+
+      <div class="transaction-amount">
+        ${formatRupiah(item.amount)}
+      </div>
+
+    </div>
+  `).join("");
+
+}
+
+
+function renderCategorySummary() {
+
+  const container =
+    document.getElementById("categorySummary");
+
+  const currentExpenses =
+    getCurrentMonthExpenses();
+
+  const categories = {};
+
+  currentExpenses.forEach(item => {
+
+    if (!categories[item.category]) {
+      categories[item.category] = 0;
+    }
+
+    categories[item.category] += Number(item.amount);
+
+  });
+
+
+  if (Object.keys(categories).length === 0) {
+
+    container.innerHTML =
+      '<div class="empty">Belum ada data bulan ini.</div>';
+
+    return;
+
+  }
+
+
+  container.innerHTML = Object.entries(categories)
+    .sort((a,b) => b[1] - a[1])
+    .map(([category,total]) => `
+
+      <div class="category-row">
+        <span>${category}</span>
+        <strong>${formatRupiah(total)}</strong>
+      </div>
+
+    `).join("");
+
+}
+
+
+function renderHistory() {
+
+  const container =
+    document.getElementById("historyList");
+
+  const filter =
+    document.getElementById("filterCategory").value;
+
+  let list = [...data.expenses];
+
+  if (filter !== "Semua") {
+
+    list =
+      list.filter(item =>
+        item.category === filter
+      );
+
+  }
+
+  list.sort(
+    (a,b) =>
+    new Date(b.date) -
+    new Date(a.date)
+  );
+
+
+  if (list.length === 0) {
+
+    container.innerHTML =
+      '<div class="empty">Belum ada transaksi.</div>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    list.map(item => `
+
+      <div class="transaction">
+
+        <div>
+
+          <div class="transaction-name">
+            ${item.name}
+          </div>
+
+          <div class="transaction-meta">
+            ${formatDate(item.date)}
+            • ${item.category}
+            ${item.note ? " • " + item.note : ""}
+          </div>
+
+        </div>
+
+        <div style="display:flex;align-items:center">
+
+          <div class="transaction-amount">
+            ${formatRupiah(item.amount)}
+          </div>
+
+          <button
+            class="delete-btn"
+            onclick="deleteExpense('${item.id}')">
+            Hapus
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function formatDate(dateString) {
+
+  const date =
+    new Date(dateString + "T00:00:00");
+
+  return date.toLocaleDateString(
+    "id-ID",
+    {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+function addExpense() {
+
+  const name =
+    document.getElementById("expenseName").value.trim();
+
+  const amount =
+    Number(document.getElementById("expenseAmount").value);
+
+  const category =
+    document.getElementById("expenseCategory").value;
+
+  const date =
+    document.getElementById("expenseDate").value;
+
+  const note =
+    document.getElementById("expenseNote").value.trim();
+
+
+  if (!name || !amount || !date) {
+
+    alert(
+      "Nama, nominal, dan tanggal wajib diisi."
+    );
+
+    return;
+
+  }
+
+
+  data.expenses.push({
+
+    id: Date.now().toString(),
+
+    name: name,
+
+    amount: amount,
+
+    category: category,
+
+    date: date,
+
+    note: note
+
+  });
+
+
+  saveData();
+
+  closeExpenseModal();
+
+  clearExpenseForm();
+
+  renderAll();
+
+}
+
+
+function deleteExpense(id) {
+
+  if (!confirm("Hapus transaksi ini?")) {
+    return;
+  }
+
+  data.expenses =
+    data.expenses.filter(
+      item => item.id !== id
+    );
+
+  saveData();
+
+  renderAll();
+
+}
+
+
+function clearExpenseForm() {
+
+  document.getElementById("expenseName").value = "";
+
+  document.getElementById("expenseAmount").value = "";
+
+  document.getElementById("expenseNote").value = "";
+
+}
+
+
+function openExpenseModal() {
+
+  const today =
+    new Date().toISOString().split("T")[0];
+
+  document.getElementById("expenseDate").value =
+    today;
+
+  document.getElementById("expenseModal")
+    .classList.add("active");
+
+}
+
+
+function closeExpenseModal() {
+
+  document.getElementById("expenseModal")
+    .classList.remove("active");
+
+}
+
+
+function saveSettings() {
+
+  data.saldoAwal =
+    Number(
+      document.getElementById("saldoInput").value
+    ) || 0;
+
+  data.tabungan =
+    Number(
+      document.getElementById("tabunganInput").value
+    ) || 0;
+
+  data.budget =
+    Number(
+      document.getElementById("budgetInput").value
+    ) || 0;
+
+
+  saveData();
+
+  renderAll();
+
+  showPage("home");
+
+}
+
+
+function populateSettings() {
+
+  document.getElementById("saldoInput").value =
+    data.saldoAwal || "";
+
+  document.getElementById("tabunganInput").value =
+    data.tabungan || "";
+
+  document.getElementById("budgetInput").value =
+    data.budget || "";
+
+}
+
+
+function showPage(page) {
+
+  document.querySelectorAll(".page")
+    .forEach(el =>
+      el.classList.remove("active")
+    );
+
+  document.querySelectorAll(".bottom-nav button")
+    .forEach(el =>
+      el.classList.remove("active")
+    );
+
+
+  if (page === "home") {
+
+    document.getElementById("homePage")
+      .classList.add("active");
+
+    document.getElementById("navHome")
+      .classList.add("active");
+
+  }
+
+
+  if (page === "history") {
+
+    document.getElementById("historyPage")
+      .classList.add("active");
+
+    document.getElementById("navHistory")
+      .classList.add("active");
+
+    renderHistory();
+
+  }
+
+
+  if (page === "settings") {
+
+    document.getElementById("settingsPage")
+      .classList.add("active");
+
+    document.getElementById("navSettings")
+      .classList.add("active");
+
+    populateSettings();
+
+  }
+
+}
+
+
+function renderAll() {
+
+  renderDashboard();
+
+  renderHistory();
+
+}
+
+
+function setMonthLabel() {
+
+  const now = new Date();
+
+  document.getElementById("monthLabel").innerText =
+    now.toLocaleDateString(
+      "id-ID",
+      {
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+}
+
+
+setMonthLabel();
+renderAll();
+
+</script>
+
+</body>
+</html>
